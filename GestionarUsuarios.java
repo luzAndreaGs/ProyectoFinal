@@ -1,77 +1,48 @@
-package proyectoparcial2;
+package proyectoFinal;
 import java.sql.*;
-import java.util.Scanner;
+//import java.util.Scanner;
 
 public class GestionarUsuarios {
 
-    public static void mostrarMenuUsuarios(Connection conn) {
-        Scanner scanner = new Scanner(System.in);
-        boolean continuar = true;
-        
-        while (continuar) {
-            System.out.println("\nGestión de Usuarios:");
-            System.out.println("1. Registrar Usuario");
-            System.out.println("2. Modificar Usuario");
-            System.out.println("3. Eliminar Usuario");
-            System.out.println("4. Ver Usuarios");
-            System.out.println("5. Regresar al Menú Principal");
-            System.out.print("Seleccione una opción: ");
-            int opcion = scanner.nextInt();
-            scanner.nextLine(); 
+//    public static void mostrarMenuUsuarios(Connection conn) {
+//        Scanner scanner = new Scanner(System.in);
+//        boolean continuar = true;
+//        
+//        while (continuar) {
+//            System.out.println("\nGestión de Usuarios:");
+//            System.out.println("1. Registrar Usuario");
+//            System.out.println("2. Modificar Usuario");
+//            System.out.println("3. Eliminar Usuario");
+//            System.out.println("4. Ver Usuarios");
+//            System.out.println("5. Regresar al Menú Principal");
+//            System.out.print("Seleccione una opción: ");
+//            int opcion = scanner.nextInt();
+//            scanner.nextLine(); 
+//
+//            switch (opcion) {
+//                case 1:
+//                    registrarUsuario(conn);
+//                    break;
+//                case 2:
+//                    modificarUsuario(conn);
+//                    break;
+//                case 3:
+//                    eliminarUsuario(conn);
+//                    break;
+//                case 4:
+//                    verUsuarios(conn);
+//                    break;
+//                case 5:
+//                    continuar = false;
+//                    break;
+//                default:
+//                    System.out.println("Opción no válida.");
+//                    break;
+//            }
+//        }
+//    }
 
-            switch (opcion) {
-                case 1:
-                    registrarUsuario(conn);
-                    break;
-                case 2:
-                    modificarUsuario(conn);
-                    break;
-                case 3:
-                    eliminarUsuario(conn);
-                    break;
-                case 4:
-                    verUsuarios(conn);
-                    break;
-                case 5:
-                    continuar = false;
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
-                    break;
-            }
-        }
-    }
-
-    private static void registrarUsuario(Connection conn) {
-        Scanner scanner = new Scanner(System.in);
-
-        // Ingresar los datos de Persona
-        System.out.print("Ingrese el nombre: ");
-        String nombre = scanner.nextLine();
-
-        System.out.print("Ingrese el apellido paterno: ");
-        String apellidoPaterno = scanner.nextLine();
-
-        System.out.print("Ingrese el apellido materno: ");
-        String apellidoMaterno = scanner.nextLine();
-
-        System.out.print("Ingrese la edad: ");
-        int edad = scanner.nextInt();
-        scanner.nextLine();
-
-        System.out.print("Ingrese el teléfono: ");
-        String telefono = scanner.nextLine();
-
-        System.out.print("Ingrese el email: ");
-        String email = scanner.nextLine();
-
-        // Ingresar los datos de Usuario
-        System.out.print("Ingrese el ussername: ");
-        String ussername = scanner.nextLine();
-
-        System.out.print("Ingrese la contraseña: ");
-        String contraseña = scanner.nextLine();
-
+    protected static void registrarUsuario(Connection conn, String nombre, String apellidoPaterno, String apellidoMaterno, int edad, String telefono, String email, String ussername, String contraseña) {
         try {
             // Insertar en Persona
             String sqlPersona = "INSERT INTO Persona (nombre, apellidoPaterno, apellidoMaterno, edad, telefono, email) VALUES (?, ?, ?, ?, ?, ?)";
@@ -99,51 +70,12 @@ public class GestionarUsuarios {
             usuarioStmt.setString(3, contraseña);
             usuarioStmt.executeUpdate();
 
-            System.out.println("Usuario registrado exitosamente.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private static void modificarUsuario(Connection conn) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Ingrese el id del usuario que desea modificar: ");
-        int idUsuario = scanner.nextInt();
-        scanner.nextLine();
-
-        if (!existeUsuario(conn, idUsuario)) {
-            System.out.println("El usuario no existe.");
-            return;
-        }
-
-        // Modificar datos de Persona
-        System.out.print("Ingrese el nuevo nombre: ");
-        String nuevoNombre = scanner.nextLine();
-
-        System.out.print("Ingrese el nuevo apellido paterno: ");
-        String nuevoApellidoPaterno = scanner.nextLine();
-
-        System.out.print("Ingrese el nuevo apellido materno: ");
-        String nuevoApellidoMaterno = scanner.nextLine();
-
-        System.out.print("Ingrese la nueva edad: ");
-        int nuevaEdad = scanner.nextInt();
-        scanner.nextLine();
-
-        System.out.print("Ingrese el nuevo teléfono: ");
-        String nuevoTelefono = scanner.nextLine();
-
-        System.out.print("Ingrese el nuevo email: ");
-        String nuevoEmail = scanner.nextLine();
-
-        // Modificar datos de Usuario
-        System.out.print("Ingrese el nuevo ussername: ");
-        String nuevoUssername = scanner.nextLine();
-        
-        System.out.print("Ingrese la nueva contraseña: ");
-        String nuevaContraseña = scanner.nextLine();
-
+    protected static void modificarUsuario(Connection conn, int idUsuario, String nuevoNombre, String nuevoApellidoPaterno, String nuevoApellidoMaterno, int nuevaEdad, String nuevoTelefono, String nuevoEmail, String nuevoUssername, String nuevaContraseña) {
         try {
             // Obtener el idPersona relacionado con el usuario
             String obtenerIdPersona = "SELECT idPersona FROM Usuario WHERE idUsuario = ?";
@@ -176,23 +108,12 @@ public class GestionarUsuarios {
             usuarioStmt.setInt(3, idUsuario);
             usuarioStmt.executeUpdate();
 
-            System.out.println("Usuario modificado exitosamente.");
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 
-    private static void eliminarUsuario(Connection conn) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Ingrese el id del usuario que desea eliminar: ");
-        int idUsuario = scanner.nextInt();
-
-        if (!existeUsuario(conn, idUsuario)) {
-            System.out.println("El usuario no existe.");
-            return;
-        }
-
+    protected static void eliminarUsuario(Connection conn, int idUsuario) {
         try {
             // Obtener el idPersona relacionado con el usuario
             String obtenerIdPersona = "SELECT idPersona FROM Usuario WHERE idUsuario = ?";
@@ -223,28 +144,28 @@ public class GestionarUsuarios {
         }
     }
 
-    private static void verUsuarios(Connection conn) {
-        String query = "SELECT u.idUsuario, u.nombreUsuario, p.nombre, p.apellidoPaterno, p.apellidoMaterno, p.edad, p.telefono, p.email FROM Usuario u JOIN Persona p ON u.idPersona = p.idPersona";
+//    private static void verUsuarios(Connection conn) {
+//        String query = "SELECT u.idUsuario, u.nombreUsuario, p.nombre, p.apellidoPaterno, p.apellidoMaterno, p.edad, p.telefono, p.email FROM Usuario u JOIN Persona p ON u.idPersona = p.idPersona";
+//
+//        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+//            ResultSet rs = stmt.executeQuery();
+//
+//            System.out.println("\nLista de Usuarios:");
+//            while (rs.next()) {
+//                System.out.println("ID Usuario: " + rs.getString("idUsuario"));
+//                System.out.println("Usuario: " + rs.getString("nombreUsuario"));
+//                System.out.println("Nombre: " + rs.getString("nombre") + " " + rs.getString("apellidoPaterno") + " " + rs.getString("apellidoMaterno"));
+//                System.out.println("Edad: " + rs.getInt("edad"));
+//                System.out.println("Teléfono: " + rs.getString("telefono"));
+//                System.out.println("Email: " + rs.getString("email"));
+//                System.out.println("-------------------------------");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            ResultSet rs = stmt.executeQuery();
-
-            System.out.println("\nLista de Usuarios:");
-            while (rs.next()) {
-                System.out.println("ID Usuario: " + rs.getString("idUsuario"));
-                System.out.println("Usuario: " + rs.getString("nombreUsuario"));
-                System.out.println("Nombre: " + rs.getString("nombre") + " " + rs.getString("apellidoPaterno") + " " + rs.getString("apellidoMaterno"));
-                System.out.println("Edad: " + rs.getInt("edad"));
-                System.out.println("Teléfono: " + rs.getString("telefono"));
-                System.out.println("Email: " + rs.getString("email"));
-                System.out.println("-------------------------------");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private static boolean existeUsuario(Connection conn, int idUsuario) {
+    protected static boolean existeUsuario(Connection conn, int idUsuario) {
         String query = "SELECT idUsuario FROM Usuario WHERE idUsuario = ?";
         
         try (PreparedStatement stmt = conn.prepareStatement(query)) {

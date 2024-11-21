@@ -1,73 +1,48 @@
 package proyectoparcial2;
 import java.sql.*;
-import java.util.Scanner;
+//import java.util.Scanner;
 
 public class GestionarClientes {
-
-    public static void mostrarMenuClientes(Connection conn) {
-        Scanner scanner = new Scanner(System.in);
-        boolean continuar = true;
-        
-        while (continuar) {
-            System.out.println("\nGestión de Clientes:");
-            System.out.println("1. Registrar Cliente");
-            System.out.println("2. Modificar Cliente");
-            System.out.println("3. Eliminar Cliente");
-            System.out.println("4. Ver Clientes");
-            System.out.println("5. Regresar al Menú Principal");
-            System.out.print("Seleccione una opción: ");
-            int opcion = scanner.nextInt();
-            scanner.nextLine(); 
-
-            switch (opcion) {
-                case 1:
-                    registrarCliente(conn);
-                    break;
-                case 2:
-                    modificarCliente(conn);
-                    break;
-                case 3:
-                    eliminarCliente(conn);
-                    break;
-                case 4:
-                    verClientes(conn);
-                    break;
-                case 5:
-                    continuar = false;
-                    break;
-                default:
-                    System.out.println("Opción no válida.");
-                    break;
-            }
-        }
-    }
+//
+//    public static void mostrarMenuClientes(Connection conn) {
+//        Scanner scanner = new Scanner(System.in);
+//        boolean continuar = true;
+//        
+//        while (continuar) {
+//            System.out.println("\nGestión de Clientes:");
+//            System.out.println("1. Registrar Cliente");
+//            System.out.println("2. Modificar Cliente");
+//            System.out.println("3. Eliminar Cliente");
+//            System.out.println("4. Ver Clientes");
+//            System.out.println("5. Regresar al Menú Principal");
+//            System.out.print("Seleccione una opción: ");
+//            int opcion = scanner.nextInt();
+//            scanner.nextLine(); 
+//
+//            switch (opcion) {
+//                case 1:
+//                    registrarCliente(conn);
+//                    break;
+//                case 2:
+//                    modificarCliente(conn);
+//                    break;
+//                case 3:
+//                    eliminarCliente(conn);
+//                    break;
+//                case 4:
+//                    verClientes(conn);
+//                    break;
+//                case 5:
+//                    continuar = false;
+//                    break;
+//                default:
+//                    System.out.println("Opción no válida.");
+//                    break;
+//            }
+//        }
+//    }
     
-    private static void registrarCliente(Connection conn) {
-        Scanner scanner = new Scanner(System.in);
-
-        // Ingresar los datos de Persona
-        System.out.print("Ingrese el nombre: ");
-        String nombre = scanner.nextLine();
-
-        System.out.print("Ingrese el apellido paterno: ");
-        String apellidoPaterno = scanner.nextLine();
-
-        System.out.print("Ingrese el apellido materno: ");
-        String apellidoMaterno = scanner.nextLine();
-
-        System.out.print("Ingrese la edad: ");
-        int edad = scanner.nextInt();
-        scanner.nextLine();
-
-        System.out.print("Ingrese el teléfono: ");
-        String telefono = scanner.nextLine();
-
-        System.out.print("Ingrese el email: ");
-        String email = scanner.nextLine();
-
-        // Concatenar el nombre completo del cliente
-        String nombreCliente = nombre + " " + apellidoPaterno + " " + apellidoMaterno;
-
+    protected static void registrarCliente(Connection conn, String nombre, String apellidoPaterno, String apellidoMaterno, int edad, String telefono, String email, String nombreCliente) {
         try {
             // Insertar en Persona
             String sqlPersona = "INSERT INTO Persona (nombre, apellidoPaterno, apellidoMaterno, edad, telefono, email) VALUES (?, ?, ?, ?, ?, ?)";
@@ -94,47 +69,12 @@ public class GestionarClientes {
             clienteStmt.setString(2, nombreCliente);  // Usar el nombre completo concatenado
             clienteStmt.executeUpdate();
 
-            System.out.println("Cliente registrado exitosamente");
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error al registrar cliente: " + e.getMessage(), e);
         }
     }
     
-    private static void modificarCliente(Connection conn) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Ingrese el ID del cliente que desea modificar: ");
-        int idCliente = scanner.nextInt();
-        scanner.nextLine();
-
-        if (!existeCliente(conn, idCliente)) {
-            System.out.println("El cliente no existe.");
-            return;
-        }
-
-        // Modificar datos de Persona
-        System.out.print("Ingrese el nuevo nombre: ");
-        String nuevoNombre = scanner.nextLine();
-
-        System.out.print("Ingrese el nuevo apellido paterno: ");
-        String nuevoApellidoPaterno = scanner.nextLine();
-
-        System.out.print("Ingrese el nuevo apellido materno: ");
-        String nuevoApellidoMaterno = scanner.nextLine();
-
-        System.out.print("Ingrese la nueva edad: ");
-        int nuevaEdad = scanner.nextInt();
-        scanner.nextLine();
-
-        System.out.print("Ingrese el nuevo teléfono: ");
-        String nuevoTelefono = scanner.nextLine();
-
-        System.out.print("Ingrese el nuevo email: ");
-        String nuevoEmail = scanner.nextLine();
-
-        // Concatenar el nuevo nombre completo del cliente
-        String nuevoNombreCliente = nuevoNombre + " " + nuevoApellidoPaterno + " " + nuevoApellidoMaterno;
-
+    protected static void modificarCliente(Connection conn, int idCliente, String nuevoNombre, String nuevoApellidoPaterno, String nuevoApellidoMaterno, int nuevaEdad, String nuevoTelefono, String nuevoEmail, String nuevoNombreCliente) {
         try {
             // Obtener el idPersona relacionado con el cliente
             String obtenerIdPersona = "SELECT idPersona FROM Cliente WHERE idCliente = ?";
@@ -166,24 +106,12 @@ public class GestionarClientes {
             clienteStmt.setInt(2, idCliente);
             clienteStmt.executeUpdate();
 
-            System.out.println("Cliente modificado exitosamente");
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error al modificar cliente: " + e.getMessage(), e);
         }
     }
 
-    private static void eliminarCliente(Connection conn) {
-        Scanner scanner = new Scanner(System.in);
-
-        System.out.print("Ingrese el ID del cliente que desea eliminar: ");
-        int idCliente = scanner.nextInt();
-        scanner.nextLine();
-
-        if (!existeCliente(conn, idCliente)) {
-            System.out.println("El cliente no existe.");
-            return;
-        }
-
+    protected static void eliminarCliente(Connection conn, int idCliente) {
         try {
             // Obtener el idPersona relacionado con el cliente
             String obtenerIdPersona = "SELECT idPersona FROM Cliente WHERE idCliente = ?";
@@ -208,33 +136,32 @@ public class GestionarClientes {
             personaStmt.setInt(1, idPersona);
             personaStmt.executeUpdate();
 
-            System.out.println("Cliente eliminado exitosamente.");
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Error al eliminar cliente: " + e.getMessage(), e);
         }
     }
 
-    private static void verClientes(Connection conn) {
-        String query = "SELECT c.idCliente, c.nombreCliente, p.nombre, p.apellidoPaterno, p.apellidoMaterno, p.edad, p.telefono, p.email FROM Cliente c JOIN Persona p ON c.idPersona = p.idPersona";
+//    private static void verClientes(Connection conn) {
+//        String query = "SELECT c.idCliente, c.nombreCliente, p.nombre, p.apellidoPaterno, p.apellidoMaterno, p.edad, p.telefono, p.email FROM Cliente c JOIN Persona p ON c.idPersona = p.idPersona";
+//
+//        try (PreparedStatement stmt = conn.prepareStatement(query)) {
+//            ResultSet rs = stmt.executeQuery();
+//
+//            System.out.println("\nLista de Clientes:");
+//            while (rs.next()) {
+//                System.out.println("ID Cliente: " + rs.getInt("idCliente"));
+//                System.out.println("Cliente: " + rs.getString("nombreCliente"));
+//                System.out.println("Edad: " + rs.getInt("edad"));
+//                System.out.println("Teléfono: " + rs.getString("telefono"));
+//                System.out.println("Email: " + rs.getString("email"));
+//                System.out.println("-------------------------------");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        try (PreparedStatement stmt = conn.prepareStatement(query)) {
-            ResultSet rs = stmt.executeQuery();
-
-            System.out.println("\nLista de Clientes:");
-            while (rs.next()) {
-                System.out.println("ID Cliente: " + rs.getInt("idCliente"));
-                System.out.println("Cliente: " + rs.getString("nombreCliente"));
-                System.out.println("Edad: " + rs.getInt("edad"));
-                System.out.println("Teléfono: " + rs.getString("telefono"));
-                System.out.println("Email: " + rs.getString("email"));
-                System.out.println("-------------------------------");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static boolean existeCliente(Connection conn, int idCliente) {
+    protected static boolean existeCliente(Connection conn, int idCliente) {
         String query = "SELECT idCliente FROM Cliente WHERE idCliente = ?";
 
         try (PreparedStatement stmt = conn.prepareStatement(query)) {
